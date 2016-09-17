@@ -18,11 +18,6 @@ class Ball < GameObject
     v[:y] = -4
   end
 
-  def gravity
-
-
-
-  end
 
   def update
     self.x += v[:x]
