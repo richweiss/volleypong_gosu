@@ -226,8 +226,10 @@ class Ball < GameObject
   attr_accessor :v
 
   def initialize(x, y, v)
+    @image = Gosu::Image.new("img/pangolin_0.png")
     super(x, y, WIDTH, HEIGHT)
     @v = v
+    @angle = 0
   end
 
   def reflect_horizontal(other)
@@ -264,7 +266,8 @@ class Ball < GameObject
   end
 
   def draw
-    Gosu.draw_rect x, y, WIDTH, HEIGHT, Gosu::Color::RED
+    @angle +=1
+    @image.draw_rot(self.x, self.y, 1000, @angle, center_x = 0.5, center_y = 0.5, scale_x = 0.25, scale_y = 0.25, color = 0xffffffff, mode = :default)
   end
 
 end
