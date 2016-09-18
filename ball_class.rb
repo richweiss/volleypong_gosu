@@ -4,6 +4,7 @@ class Ball < GameObject
 
   attr_reader :v
   def initialize(x, y, v)
+    @image = Gosu::Image.new("img/pangolin_0.png")
     super(x, y, WIDTH, HEIGHT)
     @v = v
   end
@@ -18,11 +19,6 @@ class Ball < GameObject
     v[:y] = -4
   end
 
-  def gravity
-
-
-
-  end
 
   def update
     self.x += v[:x]
@@ -31,7 +27,7 @@ class Ball < GameObject
   end
 
   def draw
-    Gosu.draw_rect x, y, WIDTH, HEIGHT, Gosu::Color::RED
+    @image.draw(100, 150, 1000, factor_x = 0.25, factor_y = 0.25, color = 0xffffffff, mode = :default)
   end
 
 end
