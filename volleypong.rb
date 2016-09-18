@@ -3,12 +3,13 @@ require 'gosu'
 class MyWindow < Gosu::Window
   attr_accessor :height
   attr_accessor :width
+  attr_accessor :win_amount
 
   def initialize
     super(1280, 800)
     self.caption = 'Pangolin Volleyball!'
     @font = Gosu::Font.new(20)
-    @ball = Ball.new( 620, 500, { :x => 10, :y => 8 })
+    @ball = Ball.new( 620, 500, { :x => 10, :y => -8 })
     @background_image_1 = Gosu::Image.new("img/pv_bckgrnd_1.jpg", :tileable => true)
     @background_image_2 = Gosu::Image.new("img/pv_bckgrnd_2.jpg", :tileable => true)
     @background_image_3 = Gosu::Image.new("img/pv_bckgrnd_3.jpg", :tileable => true)
@@ -28,6 +29,8 @@ class MyWindow < Gosu::Window
     @player_speed_X = 8
     @player_speed_Y = 16
     @state = :stopped
+    @win_text = ""
+    @win_amount = 3
     @roarPlayer1 = Gosu::Sample.new("media/volleypong_sounds/chrisRoar.m4a")
     @roarPlayer2 = Gosu::Sample.new("media/volleypong_sounds/JeffRoar.m4a")
     @p1 = Gosu::Sample.new("media/volleypong_sounds/Player1.m4a")
@@ -45,59 +48,10 @@ class MyWindow < Gosu::Window
 
 
   if @state == :in_play
+    player_inputs
     @player1.update
     @player2.update
     check_win
-
-    if Gosu::button_down? Gosu::KbA then
-      @player1.x += -@player_speed_X
-    end
-    if Gosu::button_down? Gosu::KbD then
-      @player1.x += @player_speed_X
-    end
-
-    if Gosu::button_down? Gosu::KbW then
-      if @player1.player_landed && @player1.bottom >= 800
-        @player1.player_landed = false
-      end
-    end
-
-    if Gosu::button_down? Gosu::KbS then
-      @player1.y += @player_speed_Y
-    end
-    if Gosu::button_down? Gosu::KbLeft then
-      @player2.x += -@player_speed_X
-    end
-    if Gosu::button_down? Gosu::KbRight then
-      @player2.x += @player_speed_X
-    end
-
-    if Gosu::button_down? Gosu::KbUp
-      if @player2.player_landed && @player2.bottom >= 800
-        @player2.player_landed = false
-      end
-    end
-
-    if Gosu::button_down? Gosu::KbDown then
-      @player2.y += @player_speed_Y
-    end
-
-    if @player1.player_landed == false
-      @player1.y += -@player_speed_Y
-      if @player1.y <= 550
-
-        @player1.player_landed = true
-      end
-    end
-
-    if @player2.player_landed == false
-      @player2.y += -@player_speed_Y
-      if @player2.y <= 550
-
-        @player2.player_landed = true
-      end
-    end
-
 
     @ball.update
 
@@ -252,6 +206,7 @@ class MyWindow < Gosu::Window
       if Gosu::button_down? Gosu::KbSpace
 
         @state = :in_play
+
       end
     end
 
@@ -266,18 +221,75 @@ class MyWindow < Gosu::Window
     @font.draw("Score: #{@player1.score}", 10, 10, 1, 1.0, 1.0, 0xff_ffff00)
     @font.draw("Score: #{@player2.score}", 1160, 10, 1, 1.0, 1.0, 0xff_ffff00)
     @chosen_background_img.draw(0, 0, -10)
+    if @state == :stopped
+      @font.draw("#{@win_text}", 550, 100, 1, 1.0, 1.0, 0xff_ffff00)
+    end
+  end
+
+  def player_inputs
+
+    if Gosu::button_down? Gosu::KbA then
+      @player1.x += -@player_speed_X
+    end
+    if Gosu::button_down? Gosu::KbD then
+      @player1.x += @player_speed_X
+    end
+
+    if Gosu::button_down? Gosu::KbW then
+      if @player1.player_landed && @player1.bottom >= 800
+        @player1.player_landed = false
+      end
+    end
+
+    if Gosu::button_down? Gosu::KbS then
+      @player1.y += @player_speed_Y
+    end
+    if Gosu::button_down? Gosu::KbLeft then
+      @player2.x += -@player_speed_X
+    end
+    if Gosu::button_down? Gosu::KbRight then
+      @player2.x += @player_speed_X
+    end
+
+    if Gosu::button_down? Gosu::KbUp
+      if @player2.player_landed && @player2.bottom >= 800
+        @player2.player_landed = false
+      end
+    end
+
+    if Gosu::button_down? Gosu::KbDown then
+      @player2.y += @player_speed_Y
+    end
+
+    if @player1.player_landed == false
+      @player1.y += -@player_speed_Y
+      if @player1.y <= 550
+
+        @player1.player_landed = true
+      end
+    end
+
+    if @player2.player_landed == false
+      @player2.y += -@player_speed_Y
+      if @player2.y <= 550
+
+        @player2.player_landed = true
+      end
+    end
+
   end
 
   def check_win
     if ( @ball.bottom >= self.height && @ball.right < (self.width / 2))
-      puts "Point for Green/right player!"
       @state = :stopped
       @player2.score +=1
-
-      if @player2.score == 5
+      @win_text = "Player 2 scored!"
+      if @player2.score == self.win_amount
 
         @player1.score = 0
         @player2.score = 0
+        @win_text = "Player 2 Wins!"
+
 
       end
       @ball.reset
@@ -286,16 +298,15 @@ class MyWindow < Gosu::Window
       @player2.reset
 
     elsif (@ball.bottom >= self.height && @ball.left > (self.width / 2))
-      puts "Point for Yellow/left player!"
       @state = :stopped
       @player1.score +=1
-
-      if @player1.score == 5
+      @win_text = "Player 1 scored!"
+      if @player1.score == self.win_amount
 
         #player 1 wins
         @player1.score = 0
         @player2.score = 0
-
+        @win_text = "Player 1 Wins!"
       end
 
       @ball.reset
