@@ -15,6 +15,11 @@ class MyWindow < Gosu::Window
     @width = 1280
     @player_speed_X = 8
     @player_speed_Y = 12
+    @roarPlayer1 = Gosu::Sample.new("media/volleypong_sounds/chrisRoar.m4a")
+    @roarPlayer2 = Gosu::Sample.new("media/volleypong_sounds/JeffRoar.m4a")
+    @lose = Gosu::Sample.new("media/volleypong_sounds/lose.m4a")
+    @win = Gosu::Sample.new("media/volleypong_sounds/win.m4a")
+    @intro = Gosu::Sample.new("media/volleypong_sounds/IntroAirhorn.m4a")
   end
 
   def update
@@ -86,7 +91,7 @@ class MyWindow < Gosu::Window
     #player 1 collision
 
     if @ball.collide?(@player1)
-
+        @roarPlayer1.play
 
       if @ball.center_x  < (@player1.center_x)
 
@@ -136,6 +141,8 @@ class MyWindow < Gosu::Window
     #Player 2 collision
 
     if @ball.collide?(@player2)
+       @roarPlayer2.play
+
       if @ball.center_x  < (@player2.center_x)
         #"Player 2 left X"
         if @ball.v[:x] > 0
