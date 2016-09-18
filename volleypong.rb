@@ -300,6 +300,7 @@ class MyWindow < Gosu::Window
         @player2.score = 0
         @win_text = "Player 2 Wins!"
         @WinPlayer2.play
+        @chosen_background_img = @background_image_array.sample
 
       end
       @ball.reset
@@ -318,6 +319,7 @@ class MyWindow < Gosu::Window
         @player2.score = 0
         @win_text = "Player 1 Wins!"
         @WinPlayer1.play
+        @chosen_background_img = @background_image_array.sample
       end
 
       @ball.reset
