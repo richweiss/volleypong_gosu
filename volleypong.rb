@@ -29,7 +29,7 @@ class MyWindow < Gosu::Window
     @player_speed_X = 8
     @player_speed_Y = 16
     @state = :stopped
-    @win_text = ""
+    @win_text = "Press Space to Serve!"
     @win_amount = 3
     @roarPlayer1 = Gosu::Sample.new("media/volleypong_sounds/chrisRoar.m4a")
     @roarPlayer2 = Gosu::Sample.new("media/volleypong_sounds/JeffRoar.m4a")
@@ -54,20 +54,93 @@ class MyWindow < Gosu::Window
     player_inputs
     @player1.update
     @player2.update
+    @ball.update
+    collision_detection
     check_win
 
-    @ball.update
 
-    if @ball.x <= 0
-
-      @ball.v[:x] = 8
-
-    elsif @ball.right >= self.width
-      @ball.v[:x] = -8
-    end
 
     #player 1 collision
 
+
+
+    elsif @state == :stopped
+      if Gosu::button_down? Gosu::KbSpace
+
+        @state = :in_play
+
+      end
+    end
+
+  end
+
+  def draw
+    @ball.draw
+    @player1.draw
+    @player2.draw
+    @net.draw
+    @font.draw("Pangolin Volleyball!", 550, 10, 1, 1.0, 1.0, 0xff_ffff00)
+    @font.draw("Score: #{@player1.score}", 10, 10, 1, 1.0, 1.0, 0xff_ffff00)
+    @font.draw("Score: #{@player2.score}", 1160, 10, 1, 1.0, 1.0, 0xff_ffff00)
+    @chosen_background_img.draw(0, 0, -10)
+    if @state == :stopped
+      @font.draw("#{@win_text}", 550, 100, 1, 1.0, 1.0, 0xff_ffff00)
+    end
+  end
+
+  def player_inputs
+
+    if Gosu::button_down? Gosu::KbA then
+      @player1.x += -@player_speed_X
+    end
+    if Gosu::button_down? Gosu::KbD then
+      @player1.x += @player_speed_X
+    end
+
+    if Gosu::button_down? Gosu::KbW then
+      if @player1.player_landed && @player1.bottom >= 800
+        @player1.player_landed = false
+      end
+    end
+
+    if Gosu::button_down? Gosu::KbS then
+      @player1.y += @player_speed_Y
+    end
+    if Gosu::button_down? Gosu::KbLeft then
+      @player2.x += -@player_speed_X
+    end
+    if Gosu::button_down? Gosu::KbRight then
+      @player2.x += @player_speed_X
+    end
+
+    if Gosu::button_down? Gosu::KbUp
+      if @player2.player_landed && @player2.bottom >= 800
+        @player2.player_landed = false
+      end
+    end
+
+    if Gosu::button_down? Gosu::KbDown then
+      @player2.y += @player_speed_Y
+    end
+
+    if @player1.player_landed == false
+      @player1.y += -@player_speed_Y
+      if @player1.y <= 550
+
+        @player1.player_landed = true
+      end
+    end
+
+    if @player2.player_landed == false
+      @player2.y += -@player_speed_Y
+      if @player2.y <= 550
+
+        @player2.player_landed = true
+      end
+    end
+  end
+
+  def collision_detection
     if @ball.collide?(@player1)
         @roarPlayer1.play(1, 1, false)
 
@@ -205,79 +278,12 @@ class MyWindow < Gosu::Window
     #if collide with the top wall
     @ball.reflect_vertical(nil) if @ball.y < 0 || @ball.bottom > self.height
 
-    elsif @state == :stopped
-      if Gosu::button_down? Gosu::KbSpace
+    if @ball.x <= 0
 
-        @state = :in_play
+      @ball.v[:x] = -@ball.v[:x]
 
-      end
-    end
-
-  end
-
-  def draw
-    @ball.draw
-    @player1.draw
-    @player2.draw
-    @net.draw
-    @font.draw("Pangolin Volleyball!", 550, 10, 1, 1.0, 1.0, 0xff_ffff00)
-    @font.draw("Score: #{@player1.score}", 10, 10, 1, 1.0, 1.0, 0xff_ffff00)
-    @font.draw("Score: #{@player2.score}", 1160, 10, 1, 1.0, 1.0, 0xff_ffff00)
-    @chosen_background_img.draw(0, 0, -10)
-    if @state == :stopped
-      @font.draw("#{@win_text}", 550, 100, 1, 1.0, 1.0, 0xff_ffff00)
-    end
-  end
-
-  def player_inputs
-
-    if Gosu::button_down? Gosu::KbA then
-      @player1.x += -@player_speed_X
-    end
-    if Gosu::button_down? Gosu::KbD then
-      @player1.x += @player_speed_X
-    end
-
-    if Gosu::button_down? Gosu::KbW then
-      if @player1.player_landed && @player1.bottom >= 800
-        @player1.player_landed = false
-      end
-    end
-
-    if Gosu::button_down? Gosu::KbS then
-      @player1.y += @player_speed_Y
-    end
-    if Gosu::button_down? Gosu::KbLeft then
-      @player2.x += -@player_speed_X
-    end
-    if Gosu::button_down? Gosu::KbRight then
-      @player2.x += @player_speed_X
-    end
-
-    if Gosu::button_down? Gosu::KbUp
-      if @player2.player_landed && @player2.bottom >= 800
-        @player2.player_landed = false
-      end
-    end
-
-    if Gosu::button_down? Gosu::KbDown then
-      @player2.y += @player_speed_Y
-    end
-
-    if @player1.player_landed == false
-      @player1.y += -@player_speed_Y
-      if @player1.y <= 550
-
-        @player1.player_landed = true
-      end
-    end
-
-    if @player2.player_landed == false
-      @player2.y += -@player_speed_Y
-      if @player2.y <= 550
-
-        @player2.player_landed = true
-      end
+    elsif @ball.right >= self.width
+      @ball.v[:x] = -@ball.v[:x]
     end
 
   end
