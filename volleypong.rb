@@ -8,7 +8,18 @@ class MyWindow < Gosu::Window
     super(1280, 800)
     self.caption = 'Pangolin Volleyball!'
     @font = Gosu::Font.new(20)
-    @ball = Ball.new( 620, 500, { :x => 10, :y => -8 })
+    @ball = Ball.new( 620, 500, { :x => 10, :y => 8 })
+    @background_image_1 = Gosu::Image.new("img/pv_bckgrnd_1.jpg", :tileable => true)
+    @background_image_2 = Gosu::Image.new("img/pv_bckgrnd_2.jpg", :tileable => true)
+    @background_image_3 = Gosu::Image.new("img/pv_bckgrnd_3.jpg", :tileable => true)
+    @background_image_4 = Gosu::Image.new("img/pv_bckgrnd_4.jpg", :tileable => true)
+    @background_image_5 = Gosu::Image.new("img/pv_bckgrnd_5.jpg", :tileable => true)
+    @background_image_array = [@background_image_1,
+                              @background_image_2,
+                              @background_image_3,
+                              @background_image_4,
+                              @background_image_5]
+    @chosen_background_img = @background_image_array.sample
     @player1 = Player.new( 50, 750, { :y => 0 }, Gosu::Color::YELLOW)
     @player2 = Player.new( 1050, 750, { :y => 0 }, Gosu::Color::GREEN)
     @net = Net.new(620, 700, 80, 80)
@@ -254,7 +265,7 @@ class MyWindow < Gosu::Window
     @font.draw("Pangolin Volleyball!", 550, 10, 1, 1.0, 1.0, 0xff_ffff00)
     @font.draw("Score: #{@player1.score}", 10, 10, 1, 1.0, 1.0, 0xff_ffff00)
     @font.draw("Score: #{@player2.score}", 1160, 10, 1, 1.0, 1.0, 0xff_ffff00)
-
+    @chosen_background_img.draw(0, 0, -10)
   end
 
   def check_win
