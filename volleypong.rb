@@ -40,7 +40,7 @@ class MyWindow < Gosu::Window
     @intro = Gosu::Sample.new("media/volleypong_sounds/IntroAirhorn.m4a")
     @intro.play;
     @WinPlayer1LosePlayer2 = Gosu::Sample.new("media/stitched_win_lose_update/WinPlayer1LosePlayer2.wav")
-    @WinPlayer1LosePlayer2 = Gosu::Sample.new("media/stitched_win_lose_update/WinPlayer2LosePlayer1.wav")
+    @WinPlayer2LosePlayer1 = Gosu::Sample.new("media/stitched_win_lose_update/WinPlayer2LosePlayer1.wav")
     # @LosePlayer1 = Gosu::Sample.new("media/stitched/LosePlayer1.wav")
     # @WinPlayer1 = Gosu::Sample.new("media/stitched/WinPlayer1.wav")
     # @LosePlayer2 = Gosu::Sample.new("media/stitched/LosePlayer2.wav")
@@ -291,7 +291,6 @@ class MyWindow < Gosu::Window
       @player2.score +=1
       @win_text = "Player 2 scored!"
       if @player2.score == self.win_amount
-
         @player1.score = 0
         @player2.score = 0
         @win_text = "Player 2 Wins!"
