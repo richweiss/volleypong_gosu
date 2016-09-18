@@ -21,8 +21,9 @@ class MyWindow < Gosu::Window
                               @background_image_4,
                               @background_image_5]
     @chosen_background_img = @background_image_array.sample
-    @player1 = Player.new( 50, 750, { :y => 0 }, "img/Lion_left.png")
-    @player2 = Player.new( 1050, 750, { :y => 0 }, "img/Lion_right.png")
+    #300 x 200
+    @player1 = Player.new( 50, 740, { :y => 0 }, "img/Lion_left.png")
+    @player2 = Player.new( 1050, 740, { :y => 0 }, "img/Lion_right.png")
     @net = Net.new(620, 700, 80, 80)
     @height = 800
     @width = 1280
@@ -480,8 +481,8 @@ class Ball < GameObject
 end
 
 class Player < GameObject
-  WIDTH = 175
-  HEIGHT = 50
+  WIDTH = 180
+  HEIGHT = 120
 
   attr_accessor :v
   attr_accessor :score
@@ -496,9 +497,9 @@ class Player < GameObject
   end
 
   def update
-    if self.y >= 750
-      self.y = 750
-    elsif self.y < 750
+    if self.y >= 740
+      self.y = 740
+    elsif self.y < 740
       self.y += v[:y]
     end
 
@@ -508,7 +509,7 @@ class Player < GameObject
   def draw
     #@image.draw_rot(self.x, self.y, 1000, @angle, center_x = 0.5, center_y = 0.5, scale_x = 0.25, scale_y = 0.25, color = 0xffffffff, mode = :default)
 
-    @image.draw(self.x, self.y, 1, scale_x = 0.6, scale_y = 0.6, color = 0xff_ffffff, mode = :default)
+    @image.draw(self.x, self.y, 1, scale_x = 0.6, scale_y = 0.75, color = 0xff_ffffff, mode = :default)
   end
 
   def player_landed?
