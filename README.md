@@ -69,14 +69,18 @@ Our Tutorial:
 
     Upload Images
 
-    1) IF you setting a background image, under initialize  
+    1) If you are setting an image use Gosu::Image under initialize, for example we will set a background image: 
 
     ```rb
         @background_image = Gosu::Image.new("folder path to image you want to use", :tileable => true)
     ```
     2) Note: tileable => true is stretching your image without compromising pixalation. 
 
-    3) 
+    Player Movement
+
+        - refer to comments in volleypong.rb
+
+
 
     (Optional)Last steps: Share your game with fellow Mac users!
 

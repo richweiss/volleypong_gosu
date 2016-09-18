@@ -8,7 +8,7 @@ class MyWindow < Gosu::Window
     super(1280, 800)
     self.caption = 'Pangolin Volleyball!'
     @font = Gosu::Font.new(20)
-    @ball = Ball.new( 620, 500, { :x => 10, :y => 8 })
+    @ball = Ball.new( 620, 500, { :x => 10, :y => -8 })
     @player1 = Player.new( 50, 750, { :y => 0 }, Gosu::Color::YELLOW)
     @player2 = Player.new( 1050, 750, { :y => 0 }, Gosu::Color::GREEN)
     @net = Net.new(620, 700, 80, 80)
@@ -16,10 +16,22 @@ class MyWindow < Gosu::Window
     @width = 1280
     @player_speed_X = 8
     @player_speed_Y = 16
-    @state = :in_play
+    @state = :stopped
+    @roarPlayer1 = Gosu::Sample.new("media/volleypong_sounds/chrisRoar.m4a")
+    @roarPlayer2 = Gosu::Sample.new("media/volleypong_sounds/JeffRoar.m4a")
+    @p1 = Gosu::Sample.new("media/volleypong_sounds/Player1.m4a")
+    @p2 = Gosu::Sample.new("media/volleypong_sounds/Player2.m4a")
+    @lose = Gosu::Sample.new("media/volleypong_sounds/lose.m4a")
+    @win = Gosu::Sample.new("media/volleypong_sounds/win.m4a")
+    @intro = Gosu::Sample.new("media/volleypong_sounds/IntroAirhorn.m4a")
+    @intro.play;
+
   end
 
+
   def update
+
+
 
   if @state == :in_play
     @player1.update
@@ -89,7 +101,7 @@ class MyWindow < Gosu::Window
     #player 1 collision
 
     if @ball.collide?(@player1)
-
+        @roarPlayer1.play(1, 1, false)
 
       if @ball.center_x  < (@player1.center_x)
 
@@ -139,6 +151,8 @@ class MyWindow < Gosu::Window
     #Player 2 collision
 
     if @ball.collide?(@player2)
+
+      @roarPlayer2.play(1, 1, false)
       if @ball.center_x <= @player2.center_x
         #"Player 2 left X"
         if @ball.v[:x] > 0
@@ -237,24 +251,47 @@ class MyWindow < Gosu::Window
     @player1.draw
     @player2.draw
     @net.draw
-    @font.draw("Pangolin Volleyball!", 10, 10, 1, 1.0, 1.0, 0xff_ffff00)
+    @font.draw("Pangolin Volleyball!", 550, 10, 1, 1.0, 1.0, 0xff_ffff00)
+    @font.draw("Score: #{@player1.score}", 10, 10, 1, 1.0, 1.0, 0xff_ffff00)
+    @font.draw("Score: #{@player2.score}", 1160, 10, 1, 1.0, 1.0, 0xff_ffff00)
+
   end
 
   def check_win
     if ( @ball.bottom >= self.height && @ball.right < (self.width / 2))
       puts "Point for Green/right player!"
       @state = :stopped
+      @player2.score +=1
+
+      if @player2.score == 5
+
+        @player1.score = 0
+        @player2.score = 0
+
+      end
       @ball.reset
       @ball.serve("left")
       @player1.reset
       @player2.reset
+
     elsif (@ball.bottom >= self.height && @ball.left > (self.width / 2))
       puts "Point for Yellow/left player!"
       @state = :stopped
+      @player1.score +=1
+
+      if @player1.score == 5
+
+        #player 1 wins
+        @player1.score = 0
+        @player2.score = 0
+
+      end
+
       @ball.reset
       @ball.serve("right")
       @player1.reset
       @player2.reset
+
     end
   end
 
@@ -411,6 +448,7 @@ class Player < GameObject
   HEIGHT = 50
 
   attr_accessor :v
+  attr_accessor :score
   attr_accessor :player_landed
 
   def initialize(x, y, v, color)
@@ -418,6 +456,7 @@ class Player < GameObject
     @v = v
     @color = color
     @player_landed = true
+    @score = 0;
   end
 
   def update
