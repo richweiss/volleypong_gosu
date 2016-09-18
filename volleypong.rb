@@ -6,6 +6,17 @@ class MyWindow < Gosu::Window
 
   def initialize
     super(1280, 800)
+    @background_image_1 = Gosu::Image.new("img/pv_bckgrnd_1.jpg", :tileable => true)
+    @background_image_2 = Gosu::Image.new("img/pv_bckgrnd_2.jpg", :tileable => true)
+    @background_image_3 = Gosu::Image.new("img/pv_bckgrnd_3.jpg", :tileable => true)
+    @background_image_4 = Gosu::Image.new("img/pv_bckgrnd_4.jpg", :tileable => true)
+    @background_image_5 = Gosu::Image.new("img/pv_bckgrnd_5.jpg", :tileable => true)
+    @background_image_array = [@background_image_1,
+                              @background_image_2,
+                              @background_image_3,
+                              @background_image_4,
+                              @background_image_5]
+    @chosen_background_img = @background_image_array.sample
     self.caption = 'Volley-Pong!'
     @ball = Ball.new( 100, 500, { :x => 10, :y => 8 })
     @player1 = Player.new( 50, 750, { :y => 0 }, Gosu::Color::YELLOW)
@@ -228,6 +239,7 @@ class MyWindow < Gosu::Window
     @player1.draw
     @player2.draw
     @net.draw
+    @chosen_background_img.draw(0, 0, -10)
   end
 
 
