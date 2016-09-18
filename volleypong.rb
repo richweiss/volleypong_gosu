@@ -6,22 +6,25 @@ class MyWindow < Gosu::Window
 
   def initialize
     super(1280, 800)
-    self.caption = 'Volley-Pong!'
-    @ball = Ball.new( 100, 500, { :x => 10, :y => 8 })
+    self.caption = 'Pangolin Volleyball!'
+    @font = Gosu::Font.new(20)
+    @ball = Ball.new( 620, 500, { :x => 10, :y => 8 })
     @player1 = Player.new( 50, 750, { :y => 0 }, Gosu::Color::YELLOW)
     @player2 = Player.new( 1050, 750, { :y => 0 }, Gosu::Color::GREEN)
     @net = Net.new(620, 700, 80, 80)
     @height = 800
     @width = 1280
     @player_speed_X = 8
-    @player_speed_Y = 12
+    @player_speed_Y = 16
+    @state = :in_play
   end
 
   def update
 
+  if @state == :in_play
     @player1.update
     @player2.update
-
+    check_win
 
     if Gosu::button_down? Gosu::KbA then
       @player1.x += -@player_speed_X
@@ -58,7 +61,7 @@ class MyWindow < Gosu::Window
 
     if @player1.player_landed == false
       @player1.y += -@player_speed_Y
-      if @player1.y <= 600
+      if @player1.y <= 550
 
         @player1.player_landed = true
       end
@@ -66,7 +69,7 @@ class MyWindow < Gosu::Window
 
     if @player2.player_landed == false
       @player2.y += -@player_speed_Y
-      if @player2.y <= 600
+      if @player2.y <= 550
 
         @player2.player_landed = true
       end
@@ -136,25 +139,27 @@ class MyWindow < Gosu::Window
     #Player 2 collision
 
     if @ball.collide?(@player2)
-      if @ball.center_x  < (@player2.center_x)
+      if @ball.center_x <= @player2.center_x
         #"Player 2 left X"
         if @ball.v[:x] > 0
           #if ball is going right
+          puts "1"
           @ball.reflect_horizontal(@player2)
-
         elsif @ball.v[:x] < 0
           #if ball is going left
+          puts "2"
           @ball.bounce_horizontal(@player2)
         end
-      elsif @ball.center_x > (@player2.center_x)
+      elsif @ball.center_x > @player2.center_x
         #"Player 2 right X"
-        if @ball.v[:x] > 0
+        if @ball.v[:x] >= 0
           #if ball is going right
+          puts "a"
           @ball.bounce_horizontal(@player2)
         elsif @ball.v[:x] < 0
           #if ball is going left
+          puts "b"
           @ball.reflect_horizontal(@player2)
-
         end
       end
 
@@ -180,7 +185,7 @@ class MyWindow < Gosu::Window
           @ball.bounce_vertical(@player2)
         end
       end
-    end
+    end # end player 2
 
     #if collide with the net
 
@@ -218,8 +223,12 @@ class MyWindow < Gosu::Window
     #if collide with the top wall
     @ball.reflect_vertical(nil) if @ball.y < 0 || @ball.bottom > self.height
 
+    elsif @state == :stopped
+      if Gosu::button_down? Gosu::KbSpace
 
-
+        @state = :in_play
+      end
+    end
 
   end
 
@@ -228,20 +237,43 @@ class MyWindow < Gosu::Window
     @player1.draw
     @player2.draw
     @net.draw
+    @font.draw("Pangolin Volleyball!", 10, 10, 1, 1.0, 1.0, 0xff_ffff00)
   end
 
-
+  def check_win
+    if ( @ball.bottom >= self.height && @ball.right < (self.width / 2))
+      puts "Point for Green/right player!"
+      @state = :stopped
+      @ball.reset
+      @ball.serve("left")
+      @player1.reset
+      @player2.reset
+    elsif (@ball.bottom >= self.height && @ball.left > (self.width / 2))
+      puts "Point for Yellow/left player!"
+      @state = :stopped
+      @ball.reset
+      @ball.serve("right")
+      @player1.reset
+      @player2.reset
+    end
+  end
 
 end
+
+
 
 class GameObject
   attr_accessor :x
   attr_accessor :y
   attr_accessor :w
   attr_accessor :h
+  attr_accessor :initialX
+  attr_accessor :initialY
 
 
   def initialize(x, y, w, h)
+    @initialX = x
+    @initialY = y
     @x = x
     @y = y
     @w = w
@@ -293,6 +325,11 @@ class GameObject
 
     x_overlap * y_overlap != 0
   end
+
+  def reset
+    self.x = self.initialX
+    self.y = self.initialY
+  end
 end
 
 class Ball < GameObject
@@ -305,6 +342,15 @@ class Ball < GameObject
     super(x, y, WIDTH, HEIGHT)
     @v = v
     @angle = 0
+  end
+
+  def serve(direction)
+    if direction == "left"
+      v[:x] = -v[:x]
+    elsif direction == "right"
+      v[:x] = v[:x]
+    end
+
   end
 
   def reflect_horizontal(other)
@@ -327,9 +373,9 @@ class Ball < GameObject
   def bounce_vertical(other)
 
     if (other != nil && v[:y] > 0)
-      v[:y] = (v[:y] + 2)
+      v[:y] = (v[:y] + 1)
     elsif (other != nil && v[:y] < 0)
-      v[:y] = (v[:y] - 2)
+      v[:y] = (v[:y] - 1)
     else
       v[:y] = v[:y]
     end
@@ -338,9 +384,9 @@ class Ball < GameObject
   def bounce_horizontal(other)
 
    if (other != nil && v[:x] >= 0)
-      v[:x] = (v[:x] + 2)
+      v[:x] = (v[:x] + 1)
     elsif (other != nil && v[:x] < 0)
-      v[:x] = (v[:x] - 2)
+      v[:x] = (v[:x] - 1)
     else
       v[:x] = v[:x]
     end
@@ -408,7 +454,7 @@ class Gravity
 
     #if thing is not falling
     if thing.v[:y] < @grav_constant
-      thing.v[:y] += (0.0167 * 12) #1 second to increase by 1
+      thing.v[:y] += (0.0167 * 16) #1 second to increase by 1
 
     #if thing is falling
     elsif thing.v[:y] > @grav_constant
@@ -437,3 +483,4 @@ class Net <GameObject
 end
 window = MyWindow.new
 window.show
+
