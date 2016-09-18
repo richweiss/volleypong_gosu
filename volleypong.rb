@@ -402,8 +402,8 @@ class GameObject
 end
 
 class Ball < GameObject
-  WIDTH = 25
-  HEIGHT = 25
+  WIDTH = 50
+  HEIGHT = 50
   attr_accessor :v
 
   def initialize(x, y, v)
@@ -424,7 +424,11 @@ class Ball < GameObject
 
   def reflect_horizontal(other)
     if other != nil
-      v[:x] = -(v[:x] + 1)
+      if v[:x] >= 0
+        v[:x] = -(v[:x] - 1)
+      elsif v[:x] >= 0
+        v[:x] = -(v[:x] + 1)
+      end
     else
       v[:x] = -v[:x]
     end
@@ -442,9 +446,9 @@ class Ball < GameObject
   def bounce_vertical(other)
 
     if (other != nil && v[:y] > 0)
-      v[:y] = (v[:y] + 1)
+      v[:y] = (v[:y] + 0.5)
     elsif (other != nil && v[:y] < 0)
-      v[:y] = (v[:y] - 1)
+      v[:y] = (v[:y] - 0.5)
     else
       v[:y] = v[:y]
     end
@@ -453,9 +457,9 @@ class Ball < GameObject
   def bounce_horizontal(other)
 
    if (other != nil && v[:x] >= 0)
-      v[:x] = (v[:x] + 1)
+      v[:x] = (v[:x] + 0)
     elsif (other != nil && v[:x] < 0)
-      v[:x] = (v[:x] - 1)
+      v[:x] = (v[:x] - 0)
     else
       v[:x] = v[:x]
     end
@@ -470,13 +474,13 @@ class Ball < GameObject
 
   def draw
     @angle +=1
-    @image.draw_rot(self.x, self.y, 1000, @angle, center_x = 0.5, center_y = 0.5, scale_x = 0.25, scale_y = 0.25, color = 0xffffffff, mode = :default)
+    @image.draw_rot(self.x, self.y, 1000, @angle, center_x = 0.5, center_y = 0.5, scale_x = 0.15, scale_y = 0.15, color = 0xffffffff, mode = :default)
   end
 
 end
 
 class Player < GameObject
-  WIDTH = 75
+  WIDTH = 175
   HEIGHT = 50
 
   attr_accessor :v
@@ -502,7 +506,9 @@ class Player < GameObject
   end
 
   def draw
-    @image.draw(self.x, self.y, 1, scale_x = 1, scale_y = 1, color = 0xff_ffffff, mode = :default)
+    #@image.draw_rot(self.x, self.y, 1000, @angle, center_x = 0.5, center_y = 0.5, scale_x = 0.25, scale_y = 0.25, color = 0xffffffff, mode = :default)
+
+    @image.draw(self.x, self.y, 1, scale_x = 0.6, scale_y = 0.6, color = 0xff_ffffff, mode = :default)
   end
 
   def player_landed?
