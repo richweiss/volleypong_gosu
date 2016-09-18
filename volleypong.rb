@@ -195,18 +195,19 @@ class MyWindow < Gosu::Window
     if @ball.collide?(@player2)
 
       @roarPlayer2.play(1, 1, false)
-      if @ball.center_x <= @player2.center_x
+
+      if @ball.center_x  < (@player2.center_x)
         #"Player 2 left X"
         if @ball.v[:x] > 0
           #if ball is going right
           puts "1"
           @ball.reflect_horizontal(@player2)
-        elsif @ball.v[:x] < 0
+        elsif @ball.v[:x] <= 0
           #if ball is going left
           puts "2"
           @ball.bounce_horizontal(@player2)
         end
-      elsif @ball.center_x > @player2.center_x
+      elsif @ball.center_x > (@player2.center_x)
         #"Player 2 right X"
         if @ball.v[:x] >= 0
           #if ball is going right
@@ -215,7 +216,8 @@ class MyWindow < Gosu::Window
         elsif @ball.v[:x] < 0
           #if ball is going left
           puts "b"
-          @ball.reflect_horizontal(@player2)
+          @ball.bounce_horizontal(@player2)
+          #@ball.reflect_horizontal(@player2)
         end
       end
 
@@ -426,15 +428,9 @@ class Ball < GameObject
   end
 
   def reflect_horizontal(other)
-    if other != nil
-      if v[:x] >= 0
-        v[:x] = -(v[:x] - 1)
-      elsif v[:x] >= 0
-        v[:x] = -(v[:x] + 1)
-      end
-    else
+
       v[:x] = -v[:x]
-    end
+
   end
 
   def reflect_vertical(other)
