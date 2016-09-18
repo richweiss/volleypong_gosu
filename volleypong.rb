@@ -21,8 +21,8 @@ class MyWindow < Gosu::Window
                               @background_image_4,
                               @background_image_5]
     @chosen_background_img = @background_image_array.sample
-    @player1 = Player.new( 50, 750, { :y => 0 }, Gosu::Color::YELLOW)
-    @player2 = Player.new( 1050, 750, { :y => 0 }, Gosu::Color::GREEN)
+    @player1 = Player.new( 50, 750, { :y => 0 }, "img/Lion_left.png")
+    @player2 = Player.new( 1050, 750, { :y => 0 }, "img/Lion_right.png")
     @net = Net.new(620, 700, 80, 80)
     @height = 800
     @width = 1280
@@ -473,10 +473,10 @@ class Player < GameObject
   attr_accessor :score
   attr_accessor :player_landed
 
-  def initialize(x, y, v, color)
+  def initialize(x, y, v, image)
     super(x, y, WIDTH, HEIGHT)
     @v = v
-    @color = color
+    @image = Gosu::Image.new(image)
     @player_landed = true
     @score = 0;
   end
@@ -492,7 +492,7 @@ class Player < GameObject
   end
 
   def draw
-    Gosu.draw_rect x, y, WIDTH, HEIGHT, @color
+    @image.draw(self.x, self.y, 1, scale_x = 1, scale_y = 1, color = 0xff_ffffff, mode = :default)
   end
 
   def player_landed?
@@ -531,7 +531,7 @@ class Net <GameObject
   HEIGHT = 100
 
   def initialize(x,y,w,h)
-
+    @net_image = Gosu::Image.new("img/rock.png")
     super(x, y, WIDTH, HEIGHT)
   end
 
@@ -539,7 +539,7 @@ class Net <GameObject
   end
 
   def draw
-    Gosu.draw_rect x, y, WIDTH, HEIGHT, Gosu::Color::WHITE
+    @net_image.draw((self.x - 75), (self.y - 55), 1, scale_x = 1, scale_y = 1, color = 0xff_ffffff, mode = :default)
   end
 end
 window = MyWindow.new
