@@ -93,8 +93,12 @@ Our Tutorial:
     And you’re done! You should now have a fully functional .app bundle.
     The .app is a self-contained Ruby installation with most of the standard library, plus a few libraries that are often used together with Gosu.
 
-        *Alternative game upload
-        - Gem install releasy
-            - automatically distributes any Ruby game app.
-            - [https://github.com/Spooner/releasy/
+        *Deploying the game
+        We are having issues deploying the game to an executable due to outdated documentation.
+        Attempt #1 - releasy - https://github.com/Spooner/releasy/
+        The most recent file of releasy is supported on Ruby 1.9.3 and doesn't work with more recent versions of Rake.
+        
+        Attempt #2 -
+        Main docs - https://github.com/gosu/gosu/wiki/Ruby-Packaging-on-OS-X
+        The docs point us to a download page for Mac wrappers (https://github.com/gosu/ruby-app/releases) however, the most recent download is for Ruby 2.3.1
 
