@@ -78,27 +78,46 @@ Our Tutorial:
 
     Player Movement
 
-        - refer to comments in volleypong.rb
+    Player movement was handled by Gosu's built in input class. When placed in the update function, the game will listen for the programmed button press every moment of the game.
 
+    ```rb
+    #if the A button is pressed...
+    Gosu::button_down? Gosu::KbA then
+        #do stuff
+    end
+    ```
+
+    Audio
+
+    Gosu's audio engine divides sample behavior among two different methods
+    -   the sample method
+    -   the song method
+
+    The sample method provides basic one-shot audio triggering functionality and this is the only method type we used for the game.
+
+
+    ```rb
+    # first assign a new instance of Gosu Sample to a variable.
+    @roarPlayer1 = Gosu::Sample.new("media/volleypong_sounds/chrisRoar.m4a")
+
+    #then play it 
+    @roarPlayer1.play
+    ```
+
+    Physics
+    https://github.com/gosu/gosu/wiki/Ruby-Chipmunk-Integration
+    
+    Gosu has a physics plugin called Chipmunk that implements non-framerate based physics into your game (that is, simulated mass, velocity, etc). Due to time constraints, we did not implement Chipmunk into the game and simply built our own version of framerate dependent "gravity" into the game. Needless to say, it is inferior to Chipmunk's physics but it suits our needs. 
 
 
     (Optional)Last steps: Share your game with fellow Mac users!
 
-    1)Download most recent Mac app wrapper (https://github.com/gosu/ruby-app/releases)
-    2)Show the app’s package contents via the right-click menu in Finder
-    3)Edit the Info.plist file, and change the bundle identifier to match your game (org.libgosu.UntitledGame by default)
-    4)Copy your game files into the Contents/Resources subfolder
-    5)Rename your game’s main source file to Main.rb
-
-    And you’re done! You should now have a fully functional .app bundle.
-    The .app is a self-contained Ruby installation with most of the standard library, plus a few libraries that are often used together with Gosu.
-
-        *Deploying the game
-        We are having issues deploying the game to an executable due to outdated documentation.
-        Attempt #1 - releasy - https://github.com/Spooner/releasy/
-        The most recent file of releasy is supported on Ruby 1.9.3 and doesn't work with more recent versions of Rake.
-        
-        Attempt #2 -
-        Main docs - https://github.com/gosu/gosu/wiki/Ruby-Packaging-on-OS-X
-        The docs point us to a download page for Mac wrappers (https://github.com/gosu/ruby-app/releases) however, the most recent download is for Ruby 2.3.1
+    *Deploying the game
+    We had issues deploying the game to an executable due to outdated documentation.
+    Attempt #1 - releasy - https://github.com/Spooner/releasy/
+    The most recent file of releasy is supported on Ruby 1.9.3 and doesn't work with more recent versions of Rake.
+    
+    Attempt #2 -
+    Main docs - https://github.com/gosu/gosu/wiki/Ruby-Packaging-on-OS-X
+    The docs point us to a download page for Mac wrappers (https://github.com/gosu/ruby-app/releases) however, the most recent download is for Ruby 2.3.1
 
