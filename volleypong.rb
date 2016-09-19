@@ -34,6 +34,10 @@ class MyWindow < Gosu::Window
     @win_amount = 3
     @roarPlayer1 = Gosu::Sample.new("media/volleypong_sounds/chrisRoar.m4a")
     @roarPlayer2 = Gosu::Sample.new("media/volleypong_sounds/JeffRoar.m4a")
+    @roar1Instance = @roarPlayer1.play(0,1);
+    @roar2Instance = @roarPlayer2.play(0,1);
+
+
     @p1 = Gosu::Sample.new("media/volleypong_sounds/Player1.m4a")
     @p2 = Gosu::Sample.new("media/volleypong_sounds/Player2.m4a")
     @lose = Gosu::Sample.new("media/volleypong_sounds/lose.m4a")
@@ -143,8 +147,7 @@ class MyWindow < Gosu::Window
 
   def collision_detection
     if @ball.collide?(@player1)
-        @roarPlayer1.play(1, 1, false)
-
+      @roar1Instance = @roarPlayer1.play unless @roar1Instance.playing?
       if @ball.center_x  < (@player1.center_x)
 
         #if ball hits left of player 1
@@ -194,17 +197,15 @@ class MyWindow < Gosu::Window
 
     if @ball.collide?(@player2)
 
-      @roarPlayer2.play(1, 1, false)
+    @roar2Instance = @roarPlayer2.play unless @roar2Instance.playing?
 
       if @ball.center_x  < (@player2.center_x)
         #"Player 2 left X"
         if @ball.v[:x] > 0
           #if ball is going right
-          puts "1"
           @ball.reflect_horizontal(@player2)
         elsif @ball.v[:x] <= 0
           #if ball is going left
-          puts "2"
           @ball.bounce_horizontal(@player2)
         end
       elsif @ball.center_x > (@player2.center_x)
@@ -331,6 +332,8 @@ class MyWindow < Gosu::Window
 
     end
   end
+
+
 
 end
 
@@ -557,6 +560,7 @@ class Net <GameObject
     @net_image.draw((self.x - 75), (self.y - 55), 1, scale_x = 1, scale_y = 1, color = 0xff_ffffff, mode = :default)
   end
 end
+
 window = MyWindow.new
 window.show
 
