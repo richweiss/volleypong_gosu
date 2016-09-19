@@ -4,12 +4,13 @@ class MyWindow < Gosu::Window
   attr_accessor :height
   attr_accessor :width
   attr_accessor :win_amount
-
+  attr_accessor :ball_speed
   def initialize
     super(1280, 800)
     self.caption = 'Pangolin Volleyball!'
     @font = Gosu::Font.new(20)
-    @ball = Ball.new( 620, 500, { :x => 10, :y => -8 })
+    @ball_speed = 12
+    @ball = Ball.new( 620, 500, { :x => @ball_speed, :y => -@ball_speed })
     @background_image_1 = Gosu::Image.new("img/pv_bckgrnd_1.jpg", :tileable => true)
     @background_image_2 = Gosu::Image.new("img/pv_bckgrnd_2.jpg", :tileable => true)
     @background_image_3 = Gosu::Image.new("img/pv_bckgrnd_3.jpg", :tileable => true)
@@ -44,13 +45,10 @@ class MyWindow < Gosu::Window
     @win = Gosu::Sample.new("media/volleypong_sounds/win.m4a")
     @intro = Gosu::Sample.new("media/volleypong_sounds/IntroAirhorn.m4a")
     @intro.play;
-    @WinPlayer1LosePlayer2 = Gosu::Sample.new("media/stitched_win_lose_update/WinPlayer1LosePlayer2.wav")
-    @WinPlayer2LosePlayer1 = Gosu::Sample.new("media/stitched_win_lose_update/WinPlayer2LosePlayer1.wav")
-    # @LosePlayer1 = Gosu::Sample.new("media/stitched/LosePlayer1.wav")
-    # @WinPlayer1 = Gosu::Sample.new("media/stitched/WinPlayer1.wav")
-    # @LosePlayer2 = Gosu::Sample.new("media/stitched/LosePlayer2.wav")
-    # @WinPlayer2 = Gosu::Sample.new("media/stitched/WinPlayer2.wav")
-
+    @LosePlayer1 = Gosu::Sample.new("media/stitched/LosePlayer1.wav")
+    @WinPlayer1 = Gosu::Sample.new("media/stitched/WinPlayer1.wav")
+    @LosePlayer2 = Gosu::Sample.new("media/stitched/LosePlayer2.wav")
+    @WinPlayer2 = Gosu::Sample.new("media/stitched/WinPlayer2.wav")
   end
 
 
@@ -215,11 +213,9 @@ class MyWindow < Gosu::Window
         #"Player 2 right X"
         if @ball.v[:x] >= 0
           #if ball is going right
-          puts "a"
           @ball.bounce_horizontal(@player2)
         elsif @ball.v[:x] < 0
           #if ball is going left
-          puts "b"
           @ball.bounce_horizontal(@player2)
           #@ball.reflect_horizontal(@player2)
         end
@@ -301,11 +297,12 @@ class MyWindow < Gosu::Window
       @player2.score +=1
       @win_text = "Player 2 scored!"
       if @player2.score == self.win_amount
+
         @player1.score = 0
         @player2.score = 0
         @win_text = "Player 2 Wins!"
+        @WinPlayer2.play
         @chosen_background_img = @background_image_array.sample
-        @WinPlayer2LosePlayer1.play
 
       end
       @ball.reset
@@ -323,11 +320,10 @@ class MyWindow < Gosu::Window
         @player1.score = 0
         @player2.score = 0
         @win_text = "Player 1 Wins!"
+        @WinPlayer1.play
         @chosen_background_img = @background_image_array.sample
-
-        @WinPlayer1LosePlayer2.play
-
       end
+
       @ball.reset
       @ball.serve("right")
       @player1.reset
@@ -478,7 +474,11 @@ class Ball < GameObject
   end
 
   def draw
-    @angle +=1
+    if v[:x] > 0
+      @angle +=2
+    else
+      @angle -=2
+    end
     @image.draw_rot(self.x, self.y, 1000, @angle, center_x = 0.5, center_y = 0.5, scale_x = 0.15, scale_y = 0.15, color = 0xffffffff, mode = :default)
   end
 
@@ -486,7 +486,7 @@ end
 
 class Player < GameObject
   WIDTH = 180
-  HEIGHT = 120
+  HEIGHT = 100
 
   attr_accessor :v
   attr_accessor :score
@@ -530,13 +530,14 @@ class Gravity
 
   def initialize
     @grav_constant = 5;
+    @fall_speed = 24;
   end
 
   def act_on(thing)
 
     #if thing is not falling
     if thing.v[:y] < @grav_constant
-      thing.v[:y] += (0.0167 * 16) #1 second to increase by 1
+      thing.v[:y] += (0.0167 * @fall_speed) #1 second to increase by 1
 
     #if thing is falling
     elsif thing.v[:y] > @grav_constant
