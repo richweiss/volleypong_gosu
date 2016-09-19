@@ -16,7 +16,7 @@ Ruby Project: VolleyPong  - similar to classic pong but players have more range 
 
 [Game Wireframe](http://i.imgur.com/S3dsYY2.jpg)
 
-Resources:
+**Resources:**
 
     1)[Primary Site] - Development Library(https://www.libgosu.org/)
 
@@ -24,24 +24,23 @@ Resources:
 
     3)[Ruby Tutorial] (https://github.com/gosu/gosu/wiki/Ruby-Tutorial)
 
-Other Tools & References:
-    
+**Other Tools & References:**   
     1) [Customizing image using Draw Method](http://www.rubydoc.info/github/jlnr/gosu/Gosu/Image#draw_rot-instance_method)
 
-Our Tutorial: 
+**Our Tutorial:** 
 
-    Initial Set-Up
+Initial Set-Up
 
-    1) brew install sdl2
-        - Gosu is built on top of the SDL 2 library.
-            -   SimpleDirectMedia Layer: A cross-platform multimedia library designed to provide fast access to the graphics framebuffer and audio device.
+1) brew install sdl2
+    - Gosu is built on top of the SDL 2 library.
+    -   SimpleDirectMedia Layer: A cross-platform multimedia library designed to provide fast access to the graphics framebuffer and audio device.
 
 
-    2) gem install gosu
+2) gem install gosu
 
-    3) All Gosu projects have a class that is derived from Gosu::Window.
+3) All Gosu projects have a class that is derived from Gosu::Window.
         Add this script to ruby file for a basic window. 
-    ```rb
+```rb
                     require 'gosu'
 
                     class MyWindow < Gosu::Window
@@ -59,65 +58,67 @@ Our Tutorial:
 
                     window = MyWindow.new
                     window.show
-    ```
+```
 
-    4) Note that Gosu has two primary methods: update() & draw()
+4) Note that Gosu has two primary methods: update() & draw()
         
-            *Update method: game(physics) logic, collisions, player input, etc. This method is called 60 times(frames) per second by default. 
+- Update method: game(physics) logic, collisions, player input, etc. This method is called 60 times(frames) per second by default. 
 
-            *Draw method: handles width, height, pixelation of your game objects.
+- Draw method: handles width, height, pixelation of your game objects. Also called 60FPS
 
-    Upload Images
+**Upload Images**
 
-    1) If you are setting an image use Gosu::Image under initialize, for example we will set a background image: 
+If you are setting an image use Gosu::Image under initialize, for example we will set a background image: 
 
-    ```rb
+```rb
         @background_image = Gosu::Image.new("folder path to image you want to use", :tileable => true)
-    ```
+```
     2) Note: tileable => true is stretching your image without compromising pixalation. 
 
-    Player Movement
+**Player Movement**
 
-    Player movement was handled by Gosu's built in input class. When placed in the update function, the game will listen for the programmed button press every moment of the game.
+Player movement was handled by Gosu's built in input class. When placed in the update function, the game will listen for the programmed button press every moment of the game.
 
-    ```rb
+```rb
     #if the A button is pressed...
     Gosu::button_down? Gosu::KbA then
         #do stuff
     end
-    ```
+```
 
-    Audio
+**Audio**
+https://www.libgosu.org/rdoc/Gosu/Sample.html
 
-    Gosu's audio engine divides sample behavior among two different methods
-    -   the sample method
-    -   the song method
+Gosu's audio engine divides sample behavior among two different methods
+-   the sample method
+-   the song method
 
-    The sample method provides basic one-shot audio triggering functionality and this is the only method type we used for the game.
+The sample method provides basic one-shot audio triggering functionality and this is the only method type we used for the game.
 
 
-    ```rb
+```rb
     # first assign a new instance of Gosu Sample to a variable.
     @roarPlayer1 = Gosu::Sample.new("media/volleypong_sounds/chrisRoar.m4a")
 
     #then play it 
     @roarPlayer1.play
-    ```
+```
 
-    Physics
-    https://github.com/gosu/gosu/wiki/Ruby-Chipmunk-Integration
+**Physics**
+https://github.com/gosu/gosu/wiki/Ruby-Chipmunk-Integration
     
-    Gosu has a physics plugin called Chipmunk that implements non-framerate based physics into your game (that is, simulated mass, velocity, etc). Due to time constraints, we did not implement Chipmunk into the game and simply built our own version of framerate dependent "gravity" into the game. Needless to say, it is inferior to Chipmunk's physics but it suits our needs. 
+Gosu has a physics plugin called Chipmunk that implements non-framerate based physics into your game (that is, simulated mass, velocity, etc). Due to time constraints, we did not implement Chipmunk into the game and simply built our own version of framerate dependent "gravity" into the game. Needless to say, it is inferior to Chipmunk's physics but it suits our needs. 
 
 
-    (Optional)Last steps: Share your game with fellow Mac users!
+(Optional)Last steps: Share your game with fellow Mac users!
 
-    *Deploying the game
-    We had issues deploying the game to an executable due to outdated documentation.
-    Attempt #1 - releasy - https://github.com/Spooner/releasy/
+**Deploying the game**
+We had issues deploying the game to an executable due to outdated documentation.
+    
+Option #1 - releasy - https://github.com/Spooner/releasy/
     The most recent file of releasy is supported on Ruby 1.9.3 and doesn't work with more recent versions of Rake.
     
-    Attempt #2 -
+Option #2 -
     Main docs - https://github.com/gosu/gosu/wiki/Ruby-Packaging-on-OS-X
     The docs point us to a download page for Mac wrappers (https://github.com/gosu/ruby-app/releases) however, the most recent download is for Ruby 2.3.1
 
